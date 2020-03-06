@@ -129,7 +129,7 @@ const Slider = () => {
                             </div>
                         </Form.Item>
                     </Form>) : (
-                        modalType === 2 ? (<div>弹床1</div>) : (<div>弹窗2</div>)
+                        modalType === 2 ? (<div>弹床dddd1</div>) : (<div>弹窗2</div>)
                     )
                 }
             </Modal>
