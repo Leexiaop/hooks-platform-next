@@ -16,13 +16,13 @@ const Main = ({ children, title='管理后台系统'}) => {
             children: [
                 {
                     id: 1,
-                    label: '广告位管理',
+                    label: '广告位位置管理',
                     route: '/'
                 },
                 {
                     id: 2,
                     label: '轮播图管理',
-                    route: '/slider-img'
+                    route: '/slider'
                 }
             ]
         }
