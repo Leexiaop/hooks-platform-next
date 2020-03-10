@@ -49,7 +49,7 @@ const Main = ({ children, title='管理后台系统'}) => {
             <Layout>
                 <Header>
                     <div>
-                        <Avatar src='http://project_platform.lee.com/img.jpg' style={{width: '48px', height: 'auto'}}></Avatar>&nbsp;&nbsp;&nbsp;Tom
+                        <Avatar src='http://cdn.project.lee.com/public/uploads/img.jpg' style={{width: '48px', height: 'auto'}}></Avatar>&nbsp;&nbsp;&nbsp;Tom
                     </div>
                     <Button onClick={logout}><LoginOutlined />退出</Button>
                 </Header>
