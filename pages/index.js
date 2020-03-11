@@ -10,7 +10,6 @@ const AddPosition = () => {
     const [form, setForm] = useState({id: '', position: ''});
     const [offset, setOffset]= useState(1);
     const [total, setTotal] = useState(0);
-    const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
         const cookies = nookies.get('userInfo')
         if (!Object.keys(cookies).length) {
@@ -18,8 +17,6 @@ const AddPosition = () => {
             Router.push('/login')
             return
         }
-        const userInfos = JSON.parse(cookies.userInfo)
-        setUserInfo(userInfos.userInfo)
         getInitData()
     }, [])
     const getInitData = async () => {
