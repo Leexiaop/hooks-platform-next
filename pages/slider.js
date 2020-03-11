@@ -13,12 +13,17 @@ const Slider = () => {
     const [tableList, setTableList] = useState([]);
     const [positionList, setPositionList] = useState([])
     const [imgUrl, setImgUrl] = useState('')
-
+    const [userInfo, setUserInfo] = useState({})
     useEffect(() => {
+        setUserInfo(JSON.parse(window.localStorage.getItem('userinfo')))
         getInitData()
     }, [])
     const getInitData = async () => {
-        const res = await fetch(`http://project_platform.lee.com/api/ad/slider?limit=10&offset=${offset}`)
+        const res = await fetch(`http://project_platform.lee.com/api/ad/slider?limit=10&offset=${offset}`, {
+            headers: {
+                Authorization: userInfo.token
+            }
+        })
         const data = await res.json()
         setTotal(data.data.total)
         const obj = await fetch(`http://project_platform.lee.com/api/ad/position`)

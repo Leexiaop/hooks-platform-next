@@ -1,13 +1,25 @@
-import React, { Fragment, useState, useMemo } from 'react';
+import React, { Fragment, useState, useMemo, useEffect } from 'react';
 import Head from 'next/head';
 import Router from 'next/router';
-import { Layout, Button, Avatar, Menu } from 'antd';
+import { Layout, Button, Avatar, Menu, message } from 'antd';
 import { LoginOutlined, MailOutlined, AppstoreOutlined } from '@ant-design/icons';
+import nookies from 'nookies'
 
 const Main = ({ children, title='管理后台系统'}) => {
     const { Header, Sider, Content } = Layout;
     const { SubMenu } = Menu;
     const [ current, setCurrent ] = useState('1');
+    const [userInfo, setUserInfo] = useState({});
+    useEffect(() => {
+        const cookies = nookies.get('userInfo')
+        if (!Object.keys(cookies).length) {
+            message.error('登录已过期，请重新登录！')
+            Router.push('/login')
+            return
+        }
+        const userInfos = JSON.parse(cookies.userInfo)
+        setUserInfo(userInfos.userInfo)
+    }, [])
     const routerList = [
         {
             id: 'index',
@@ -38,6 +50,7 @@ const Main = ({ children, title='管理后台系统'}) => {
         }).route)
     };
     const logout = () => {
+        nookies.destroy(null, 'userInfo')
         Router.push('/login')
     };
     return  (
@@ -49,7 +62,7 @@ const Main = ({ children, title='管理后台系统'}) => {
             <Layout>
                 <Header>
                     <div>
-                        <Avatar src='http://cdn.project.lee.com/public/uploads/img.jpg' style={{width: '48px', height: 'auto'}}></Avatar>&nbsp;&nbsp;&nbsp;Tom
+                        <Avatar src={userInfo.avatar} style={{width: '48px', height: 'auto'}}></Avatar>&nbsp;&nbsp;&nbsp;{userInfo.name}
                     </div>
                     <Button onClick={logout}><LoginOutlined />退出</Button>
                 </Header>

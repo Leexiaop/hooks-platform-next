@@ -1,66 +1,91 @@
 import React from 'react';
 import Default from '../layouts/default';
-import { Form, Input, Button, Checkbox } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Checkbox, message } from 'antd';
+import Router from 'next/router';
+import nookies from 'nookies';
 
-
+const layout = {
+    labelCol: {
+        span: 8
+    },
+    wrapperCol: {
+        span: 16
+    }
+};
+const tailLayout = {
+    wrapperCol: {
+        offset: 8,
+        span: 16
+    }
+};
 const Home = () => {
-    const onFinish = values => {
-        console.log('Received values of form: ', values);
+    const onFinish = async (values) => {
+        const res = await fetch('http://project_platform.lee.com/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username: values.username, password: values.password })
+        })
+        const data = await res.json()
+        if (data.code) {
+            message.error('登录失败，请重新登录！')
+        } else {
+            message.success('恭喜您，登录成功！')
+            nookies.set(null, 'userInfo', JSON.stringify(data.data), {
+                maxAge: 30 * 24 * 60 * 60,
+                path: '/'
+            })
+            Router.push('/')
+        }
     };
     return (
         <Default title="后台管理系统--登录">
             <div className="login">
                 <Form
-                    name="normal_login"
-                    className="login-form"
+                    {...layout}
+                    name="basic"
                     initialValues={{
-                      remember: true
+                        remember: true,
                     }}
-                    onFinish={onFinish}
-                >
+                        onFinish={onFinish}
+                    >
                     <Form.Item
+                        label="Username"
                         name="username"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your Username!',
-                            }
+                                message: 'Please input your username!',
+                            },
                         ]}
                     >
-                        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+                        <Input placeholder="Please input your username" autoComplete="username"/>
                     </Form.Item>
+
                     <Form.Item
+                        label="Password"
                         name="password"
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your Password!',
+                                message: 'Please input your password!',
                             }
                         ]}
                     >
-                        <Input
-                          prefix={<LockOutlined className="site-form-item-icon" />}
-                          type="password"
-                          placeholder="Password"
-                        />
-                    </Form.Item>
-                    <Form.Item>
-                    <Form.Item name="remember" valuePropName="checked" noStyle>
-                        <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
-                    <a className="login-form-forgot" href="">
-                      Forgot password
-                    </a>
+                        <Input.Password autoComplete="password" placeholder="Please input your password"/>
                     </Form.Item>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" className="login-form-button">
-                          Log in
-                        </Button>
-                        Or <a href="">register now!</a>
+                    <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+                        <Checkbox>Remember me</Checkbox>
                     </Form.Item>
-                </Form>
+
+                    <Form.Item {...tailLayout}>
+                        <Button type="primary" htmlType="submit">
+                        Submit
+                        </Button>
+                    </Form.Item>
+                    </Form>
             </div>
             <style jsx>
                 {`

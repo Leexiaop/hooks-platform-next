@@ -2,19 +2,33 @@ import React, { useState, useEffect } from 'react';
 import Main from '../layouts/main';
 import fetch from 'isomorphic-fetch';
 import { Button, Table, Modal, Popconfirm, Form, Input, message } from 'antd';
-
+import nookies from 'nookies';
 const AddPosition = () => {
     const [tableList, setTableList] = useState([]);
     const [isModalShow, setModalShow] = useState(false);
     const [modalTitle, setModalTitle] = useState('添加')
     const [form, setForm] = useState({id: '', position: ''});
     const [offset, setOffset]= useState(1);
-    const [total, setTotal] = useState(0)
+    const [total, setTotal] = useState(0);
+    const [userInfo, setUserInfo] = useState({});
     useEffect(() => {
+        const cookies = nookies.get('userInfo')
+        if (!Object.keys(cookies).length) {
+            message.error('登录已过期，请重新登录！')
+            Router.push('/login')
+            return
+        }
+        const userInfos = JSON.parse(cookies.userInfo)
+        setUserInfo(userInfos.userInfo)
         getInitData()
     }, [])
     const getInitData = async () => {
-        const res = await fetch(`http://project_platform.lee.com/api/ad/position?limit=10&offset=${offset}`)
+        const user = JSON.parse((nookies.get('userInfo')).userInfo)
+        const res = await fetch(`http://project_platform.lee.com/api/ad/position?limit=10&offset=${offset}`, {
+            headers: {
+                Authorization: `Bearer ${user.token}`
+            }
+        })
         const data = await res.json()
         setTotal(data.data.total)
         setTableList(data.data.lists.map(item => {
@@ -82,7 +96,7 @@ const AddPosition = () => {
     }
     const handleCancel = () => {
         setModalShow(false)
-        setForm({ ...form, id: '', position: ''})
+        setForm({ ...form, ...{}})
     }
     const getInput = (e) => {
         form.position = e.target.value
